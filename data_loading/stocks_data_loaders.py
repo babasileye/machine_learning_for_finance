@@ -40,7 +40,6 @@ def compute_stock_returns(prices_df):
 	return_df: stock returns dataframe (in percentage)
 	'''
 	returns_df = 100.0*prices_df.pct_change()
-
 	returns_df = returns_df.iloc[1:]
 	return returns_df
 
