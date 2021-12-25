@@ -8,7 +8,7 @@ def get_stock_data(tickers,start_date,end_date,quandl_api_key):
 	start_date: history start date in datetime format
 	end_date: history end date in datetime format
 	quandl_api_key: quandl API key you can get to https://data.nasdaq.com/sign-up
-	Ouput:
+	Outputs:
 	stocks_df: pandas dataframe containing attributes: 
 	AdjClose, AdjHigh, AdjLow, AdjOpen, ExDividend, Close, High, Low, Open, SplitRatio, Volume
 	'''
@@ -30,5 +30,35 @@ def get_stock_attribute_data(stocks_df,attribute):
 		return df
 	else:
 		logging.debug(f"{attribute} is not a valid attribute")
+		
+def compute_stock_returns(prices_df):
+	'''
+	Compute stock price returns from prices data frame
+	Inputs:
+	prices_df: stock prices data frame
+	Ouputs:
+	return_df: stock returns dataframe (in percentage)
+	'''
+	returns_df = 100.0*prices_df.pct_change()
+
+	returns_df = returns_df.iloc[1:]
+	return returns_df
+
+def compute_dataframe_mean_std(df):
+	'''
+	Compute mean standard deviation for an input dataframe.
+	If df is a stock return dataframe, stock mean returns and volatilities are computed
+	Inputs:
+	df: input dataframe
+	Outputs:
+	mean_df: mean dataframe
+	std_df: standard deviation dataframe
+	'''
+	mean_df = df.mean()
+	std_df = df.std()
+	return mean_df, std_df
+	
+	
+	
 	
 	
