@@ -2,6 +2,8 @@ import logging
 import numpy as np
 from scipy.stats import norm
 
+EPSILON = 10e-10 # used to avoid division by 0
+
 def compute_discount_factor(interest_rate,time_horizon):
    '''
    Compute discount factor
@@ -29,7 +31,7 @@ def compute_vanilla_option_price(r,sigma,initial_state,T,K,option_type):
    '''
    if option_type in ["call","put"]:
       F=initial_state*np.exp(r*T)
-      d1=(np.log(F/K)+(sigma*sigma/2.0)*T)/(sigma*np.sqrt(T))
+      d1=(np.log(F/K)+(sigma*sigma/2.0)*T)/(sigma*np.sqrt(T+EPSILON))
       d2=d1-sigma*np.sqrt(T)
       discount_factor=compute_discount_factor(interest_rate=r,time_horizon=T)
       if option_type=="call":
@@ -37,6 +39,7 @@ def compute_vanilla_option_price(r,sigma,initial_state,T,K,option_type):
       else:
          price = discount_factor*(K*norm.cdf(-d2)-F*norm.cdf(-d1))
    else:
+   EP
       logging.debug(f"Undefined vanilla option type {option_type}")
       price = np.nan
    return price
