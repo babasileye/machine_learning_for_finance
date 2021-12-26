@@ -39,7 +39,6 @@ def compute_vanilla_option_price(r,sigma,initial_state,T,K,option_type):
       else:
          price = discount_factor*(K*norm.cdf(-d2)-F*norm.cdf(-d1))
    else:
-   EP
       logging.debug(f"Undefined vanilla option type {option_type}")
       price = np.nan
    return price
