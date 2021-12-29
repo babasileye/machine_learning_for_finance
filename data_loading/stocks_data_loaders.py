@@ -62,7 +62,3 @@ def compute_dataframe_mean_std(df):
 	std_df = df.std()
 	return mean_df, std_df
 	
-	
-	
-	
-	
