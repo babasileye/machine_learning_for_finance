@@ -1,4 +1,4 @@
-import pandas_datareader.data as pdr
+import quandl 
 import logging
 
 def get_stock_data(tickers,start_date,end_date,quandl_api_key):
@@ -10,9 +10,10 @@ def get_stock_data(tickers,start_date,end_date,quandl_api_key):
 	quandl_api_key: quandl API key you can get to https://data.nasdaq.com/sign-up
 	Outputs:
 	stocks_df: pandas dataframe containing attributes: 
-	AdjClose, AdjHigh, AdjLow, AdjOpen, ExDividend, Close, High, Low, Open, SplitRatio, Volume
+	Adj. Close, Adj. High, Adj. Low, Adj. Open, Adj. Volume, ExDividend, Close, High, Low, Open, SplitRatio, Volume
 	'''
-	stocks_df = pdr.DataReader(tickers,'quandl',start_date, end_date,api_key=quandl_api_key)
+	quandl.ApiConfig.api_key=quandl_api_key
+	stocks_df=quandl.get(tickers,start_date=start_date,end_date=end_date)
 	return stocks_df
 	
 def get_stock_attribute_data(stocks_df,attribute):
@@ -21,13 +22,17 @@ def get_stock_attribute_data(stocks_df,attribute):
 	inputs:
 	stocks_df: pandas dataframe containing attributes
 	attribute: one of stocks attributes 
-	AdjClose, AdjHigh, AdjLow, AdjOpen, ExDividend, Close, High, Low, Open, SplitRatio, Volume
+	Adj. Close, Adj. High, Adj. Low, Adj. Open, Adj. Volume, ExDividend, Close, High, Low, Open, SplitRatio, Volume
 	Outputs:
 	df: dataframe containing specified stocks attribute
 	'''
-	if attribute in stocks_df.keys():
-		df = stocks_df[attribute]
-		return df
+	
+	tickers_attributes=stocks_df.keys().tolist()
+	keys = [key.split(' - ')[1] for key in tickers_attributes]
+	relevant = [tickers_attributes[n] for n in range(len(keys)) if keys[n]=='Adj. Open']
+	
+	if len(relevant)>0:
+		return stocks_df[relevant]
 	else:
 		logging.debug(f"{attribute} is not a valid attribute")
 		
