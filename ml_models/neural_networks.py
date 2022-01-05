@@ -26,7 +26,7 @@ def create_feedworward_network_model(input_dim,hidden_layers_sizes,layers_activa
    ffn_model = tf.keras.Model(inputs,outputs,name='feed_forward_network')
    return ffn_model
    
-def create_autoencoder(input_dim,encoding_layers_sizes,layers_activation,output_activation):
+def create_autoencoder(input_dim,encoding_layers_sizes,layers_activation,embedding_activation,output_activation):
    '''
    An autoencoder is a neural network that replicates it self through a bottleneck layer
    The network is constituted by an encoder and a decoder. The encoder encodes the input
@@ -43,10 +43,14 @@ def create_autoencoder(input_dim,encoding_layers_sizes,layers_activation,output_
    inputs = tf.keras.Input(shape=(input_dim,))
    nb_encoding_layers=len(encoding_layers_sizes)
    for n in range(nb_encoding_layers):
-      if n==0:  		
-         encoded=tf.keras.layers.Dense(encoding_layers_sizes[n],activation=layers_activation)(inputs)
+      if n!=nb_encoding_layers-1:
+         activation=layers_activation
       else:
-         encoded=tf.keras.layers.Dense(encoding_layers_sizes[n],activation=layers_activation)(encoded)
+         activation=embedding_activation
+      if n==0:  		
+         encoded=tf.keras.layers.Dense(encoding_layers_sizes[n],activation=activation)(inputs)
+      else:
+         encoded=tf.keras.layers.Dense(encoding_layers_sizes[n],activation=activation)(encoded)
    decoding_layers_sizes=encoding_layers_sizes[::-1][1:]
    nb_decoding_layers=nb_encoding_layers-1
    for n in range(nb_decoding_layers):
@@ -58,7 +62,4 @@ def create_autoencoder(input_dim,encoding_layers_sizes,layers_activation,output_
    encoder=tf.keras.Model(inputs,encoded,name='encoder')
    autoencoder=tf.keras.Model(inputs,decoded,name='autoencoder')
    return encoder,autoencoder
-      
-      
-      
       
